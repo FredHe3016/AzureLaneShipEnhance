@@ -2,7 +2,7 @@ import pandas as pd
 from functools import cache
 from typing import Dict, Any, Literal
 
-from .static import SHIP_NAME, RARITY
+from data.static import SHIP_NAME, RARITY
 from config import SHIP_DATA_PATH
 
 _SHEET_NAME = "Sheet1"

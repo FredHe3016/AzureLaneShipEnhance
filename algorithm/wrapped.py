@@ -1,8 +1,8 @@
 # import json
 from typing import Dict, Any
 
-from .solver import EnhanceCostMinimizer
-from .utils import EnhanceSolverConfig
+from algorithm.solver import EnhanceCostMinimizer
+from algorithm.utils import EnhanceSolverConfig
 
 def minimize_cost(
     target_ship: Dict[str, Any], 

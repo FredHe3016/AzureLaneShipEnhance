@@ -1,15 +1,19 @@
 @echo off
+chcp 65001 > nul & REM 设置控制台为 UTF-8
 setlocal enabledelayedexpansion
 
 REM --------------------------
 REM 配置区（根据项目修改）
 REM --------------------------
-set SCRIPT=src\main.py
-set NAME=最省钱强化方案
+set SCRIPT=execute.py
+set NAME=强化省钱小助手
 set ICON=assets\Akashi.ico
 set DATA_DIR=data
 set README=README.md
 set HIDDEN_IMPORTS=openpyxl
+set ORTOOLS_LIB_ROOT=D:\python\Lib\site-packages\ortools
+set ORTOOLS_LIB_SRC=%ORTOOLS_LIB_ROOT%\.libs
+set ORTOOLS_LIB_TAR=ortools\.libs
 
 REM --------------------------
 REM 自动生成版本号
@@ -30,12 +34,15 @@ REM 执行打包命令
 REM --------------------------
 echo 正在打包应用...
 pyinstaller --noconfirm ^
-    --name "%NAME%" ^
+    --name "%NAME%_v%VER%" ^
     --icon "%ICON%" ^
+    --log-level=DEBUG ^
     --add-data "%DATA_DIR%\*.xlsx;%DATA_DIR%" ^
     --add-data "%README%;." ^
+    --add-binary "%ORTOOLS_LIB_SRC%\*.dll;%ORTOOLS_LIB_TAR%" ^
+    --paths "%ORTOOLS_LIB_ROOT%" ^
     --hidden-import %HIDDEN_IMPORTS% ^
-    --onefile ^
+    --onedir ^
     --clean ^
     --distpath "%OUTPUT%" ^
     "%SCRIPT%" 1>build.log 2>&1

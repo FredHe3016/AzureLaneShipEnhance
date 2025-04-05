@@ -4,8 +4,8 @@ import tkinter as tk
 from tkinter import ttk
 from functools import cached_property
 
-from .base import Component
-from ..utils import ensure_digit_vcmd
+from executable.components.base import Component
+from executable.utils import ensure_digit_vcmd
 from data.static import STAT_TRANS, INPUT_TRANS, CUSTOMIZED_TAB, PREDEFINED_TAB, ENHANCE_STAT
 
 class _StatComp(Component): 
@@ -108,14 +108,15 @@ class InputStatsComp(Component):
         self.frame = ttk.Frame(root)
 
         self.label = ttk.Label(self.frame, text=text)
-        self.notebook = ttk.Notebook(self.frame)
+        self.notebook = ttk.Notebook(self.frame, width=40)
         self.customized = CustomizedTabComp(self.notebook)
         self.predefined = PredefinedTabComp(self.notebook)
 
     def _pack_sub_comps(self):
         self.label.pack(anchor=tk.NW, padx=10)
-        self.notebook.pack(anchor=tk.NW,fill=tk.X, padx=10)
+        self.notebook.pack(anchor=tk.NW, fill=tk.X, padx=10)
         self.customized.pack()
+        self.predefined.pack()
         self.notebook.add(self.customized.frame, text=CUSTOMIZED_TAB)
         self.notebook.add(self.predefined.frame, text=PREDEFINED_TAB)
 

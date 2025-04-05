@@ -5,7 +5,7 @@ from dataclasses import dataclass, replace
 
 from typing import Self, Any, List, Iterable
 
-from .utils import cls_annots
+from algorithm.utils import cls_annots
 
 @dataclass
 class EnhanceStats:
