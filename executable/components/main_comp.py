@@ -5,6 +5,7 @@ from ttkthemes import ThemedTk
 
 from .base import Component
 from .components import InputsComp, OutputComp
+from ..utils import get_info
 from algorithm.wrapped import minimize_cost
 
 class MainComp(Component): 
@@ -14,7 +15,7 @@ class MainComp(Component):
         self.frame = ttk.Frame(root)
 
         self.input_comp = InputsComp(self.frame)
-        self.output_comp = OutputComp(self.frame)
+        self.output_comp = OutputComp(self.frame, default_text=get_info())
 
         self.input_comp.cal_button.config(command=self.cal_command)
         self.input_comp.reset_button.config(command=self.reset_command)
