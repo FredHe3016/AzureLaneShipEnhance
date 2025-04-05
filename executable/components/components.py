@@ -1,9 +1,9 @@
 import tkinter as tk
 from tkinter import ttk
 
-from .base import Component, ThemedScrolledText
-from .stat_components import InputStatsComp
-from ..utils import check_float_input
+from executable.components.base import Component, ThemedScrolledText
+from executable.components.stat_components import InputStatsComp
+from executable.utils import check_float_input
 from algorithm.utils import adapt_material_input
 from data.static import *
 from data.data_loader import generate_material_ships
@@ -21,7 +21,7 @@ class OutputComp(Component):
         self.disabled()
     
     def _pack_sub_comps(self):
-        self.text.pack(fill=tk.Y)
+        self.text.pack(anchor=tk.SE, fill=tk.Y, expand=True)
 
     def clear(self):
         self.text.delete("1.0", tk.END)
@@ -80,7 +80,7 @@ class MaterialComp(Component):
         self.frame = ttk.Frame(root)
 
         self.label = ttk.Label(self.frame, text=text)
-        self.material_ships = ThemedScrolledText(self.frame, height=8)
+        self.material_ships = ThemedScrolledText(self.frame, width=40, height=8)
 
         self.material_ships.insert(tk.END, default_value)
         self.default_value = default_value
@@ -95,7 +95,7 @@ class MaterialComp(Component):
 
     def _pack_sub_comps(self):
         self.label.pack(anchor=tk.NW, padx=10)
-        self.material_ships.pack(anchor=tk.NW, padx=10)
+        self.material_ships.pack(anchor=tk.NW, padx=10, fill=tk.X, expand=True)
         
     def clear(self):
         self.material_ships.delete("1.0", tk.END)
@@ -175,7 +175,7 @@ class InputsComp(Component):
 
     def _pack_sub_comps(self):
         self.target_ship.pack(anchor=tk.NW, side=tk.TOP, fill=tk.X, pady=10)
-        self.material_ships.pack(anchor=tk.NW, side=tk.TOP, fill=tk.X, pady=10)
+        self.material_ships.pack(anchor=tk.NW, side=tk.TOP, fill=tk.X, expand=True, pady=10)
         self.weights.pack(anchor=tk.NW, side=tk.LEFT, fill=tk.Y, padx=10, pady=10)
         self.cal_button.pack(anchor=tk.SE, side=tk.RIGHT, pady=10, padx=10)
         self.reset_button.pack(anchor=tk.SE, side=tk.RIGHT, pady=10, padx=10)

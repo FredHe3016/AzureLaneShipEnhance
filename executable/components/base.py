@@ -3,7 +3,7 @@ from tkinter import ttk
 from functools import cached_property, wraps
 from typing import Dict, Any, Self, Tuple
 
-from ..utils import pack_decorator
+from executable.utils import pack_decorator, grid_decorator
 
 class Component: 
     frame: ttk.Frame
@@ -44,7 +44,7 @@ class Component:
             sub_comp.insert(v, clear=clear)
 
     def _pack_sub_comps(self): 
-        #内部组件打包
+        #内部组件pack
         raise NotImplementedError
 
     @pack_decorator
@@ -52,8 +52,13 @@ class Component:
         self.frame.pack(**kwargs)
         self._pack_sub_comps()
 
-    # def grid(self, **kwargs): 
-    #     raise NotImplementedError
+    def _grid_sub_comps(self): 
+        raise NotImplementedError
+
+    @grid_decorator
+    def grid(self, **kwargs): 
+        self.frame.grid(**kwargs)
+        self._grid_sub_comps()
  
     def disabled(self): 
         for c in self.sub_components.values():

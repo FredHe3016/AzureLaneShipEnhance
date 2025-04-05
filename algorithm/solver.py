@@ -4,8 +4,8 @@ from typing import List, Dict, Any, Callable
 
 from ortools.linear_solver import pywraplp 
 
-from .ship import Ship, EnhanceMaterial, EnhanceStats
-from .utils import EnhanceSolverConfig, adapt_ship_data
+from algorithm.ship import Ship, EnhanceMaterial, EnhanceStats
+from algorithm.utils import EnhanceSolverConfig, adapt_ship_data
 from data.static import STAT_TRANS, ENHANCE_SHIP_NAME, REQ_ENHANCE, REC_MATERIAL, TOTAL_ENHANCE, EQ_RESOURCE, COIN, MEDAL, SPECIAL_CORE
 from data.data_loader import load_ships_data
 
