@@ -5,7 +5,7 @@ from dataclasses import dataclass, replace
 
 from typing import Self, Any, List, Iterable
 
-from .utils import cls_annots, join_names
+from .utils import cls_annots
 
 @dataclass
 class EnhanceStats:
@@ -82,7 +82,7 @@ class EnhanceMaterial(_Ship):
 
     @cached_property
     def name(self): 
-        return join_names([s.name for s in self.ships])
+        return "/".join(s.name for s in self.ships)
 
     @property
     def max_num(self):

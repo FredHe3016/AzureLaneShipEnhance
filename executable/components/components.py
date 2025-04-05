@@ -1,19 +1,18 @@
 import tkinter as tk
 from tkinter import ttk
-from functools import cached_property, cache
-from typing import Dict, Any, Self
 
 from .base import Component, ThemedScrolledText
 from .stat_components import InputStatsComp
 from ..utils import check_float_input
 from algorithm.utils import adapt_material_input
 from data.static import *
+from data.data_loader import generate_material_ships
 
 class OutputComp(Component): 
     default_text: str
     _sub_comp_names = ("text",)
 
-    def __init__(self, root: ttk.Frame, default_text: str = INFORMATIONS):
+    def __init__(self, root: ttk.Frame, default_text: str):
         self.frame = ttk.Frame(root)
         self.text = ThemedScrolledText(self.frame, width=60)
 
@@ -168,7 +167,7 @@ class InputsComp(Component):
         self.frame = ttk.Frame(root)
 
         self.target_ship = TargetShipComp(self.frame)
-        self.material_ships = MaterialComp(self.frame, text=MATERIAL_SHIPS, default_value=N_SHIP_MATERIALS)
+        self.material_ships = MaterialComp(self.frame, text=MATERIAL_SHIPS, default_value=generate_material_ships())
         self.weights = WeightsComp(self.frame, text=RETIRE_RES_WEIGHT)
 
         self.reset_button = ttk.Button(self.frame, text=RESET_BUTTON)

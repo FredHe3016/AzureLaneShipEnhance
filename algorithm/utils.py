@@ -3,8 +3,8 @@ from dataclasses import dataclass
 from functools import cache
 from typing import Type, List, Dict, Any
 
-from config import ENHANCE_DATA_PATH
-from data.static import SHIP_CLS_COIN_MAP, RARITY_MEDAL_SC_MAP, STAT_TRANS
+from config import SHIP_DATA_PATH
+from data.static import SHIP_CLS_COIN_MAP, RARITY_MEDAL_SC_MAP, STAT_TRANS, SHIP_CLS, RARITY
 
 @cache
 def cls_annots(cls: Type): 
@@ -14,8 +14,15 @@ def cls_annots(cls: Type):
         annots.update(_)
     return annots
 
-def join_names(names: List[str]): 
-    return "".join('/'+n for n in names)[1:]
+def adapt_ship_data(n: str, d: Dict[str, Any], num: int = -1): 
+    d = d.copy()
+    d["name"] = n
+    d["max_num"] = num
+    d["retire_coins"] = SHIP_CLS_COIN_MAP[d.pop(SHIP_CLS)]
+    d.update(RARITY_MEDAL_SC_MAP[d.pop(RARITY)])
+    nutri = {v: d.pop(k) for k, v in STAT_TRANS.items()}
+    d["nutrition"] = nutri
+    return d
 
 def adapt_material_input(m_input: str): 
     material_ships = dict()
@@ -40,7 +47,7 @@ class EnhanceSolverConfig:
     @classmethod
     def get_ships_data(cls, ships: Dict[str, int]): 
         data = []
-        df = pd.read_excel(ENHANCE_DATA_PATH, sheet_name="Sheet1")
+        df = pd.read_excel(SHIP_DATA_PATH, sheet_name="Sheet1")
         for i in range(len(df)): 
             d = df.iloc[i].to_dict()
             if (n := d.pop("舰船名称")) not in ships: 

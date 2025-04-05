@@ -1,12 +1,23 @@
 import numpy as np
-from dataclasses import replace, asdict
-from typing import TYPE_CHECKING, List, Dict, Any, Callable
+from dataclasses import dataclass
+from typing import List, Dict, Any, Callable
 
 from ortools.linear_solver import pywraplp 
 
 from .ship import Ship, EnhanceMaterial, EnhanceStats
-from .utils import join_names, EnhanceSolverConfig
-from data.static import STAT_TRANS
+from .utils import EnhanceSolverConfig, adapt_ship_data
+from data.static import STAT_TRANS, ENHANCE_SHIP_NAME, REQ_ENHANCE, REC_MATERIAL, TOTAL_ENHANCE, EQ_RESOURCE, COIN, MEDAL, SPECIAL_CORE
+from data.data_loader import load_ships_data
+
+@dataclass
+class EnhanceSolverConfig: 
+    medal_weight: float = 1000      #勋章相对物资权重
+    sc_weight: float = 0            #特装原型相对物资权重
+
+    @classmethod
+    def get_ships_data(cls, ships: Dict[str, int]): 
+        sd = load_ships_data()
+        return [adapt_ship_data(n, d, ships[n]) for n, d in sd.items()]
 
 class EnhanceCostMinimizer: 
     solver: pywraplp.Solver
@@ -37,20 +48,18 @@ class EnhanceCostMinimizer:
         res_num: Callable[[EnhanceMaterial], int] = lambda m: m.res_num
         used_materials = list(filter(res_num, self.materials))
         used_materials.sort(key=res_num, reverse=True)
-        for m in used_materials: 
-            print((m.nutrition.array, m.res_num))
         sum_enhance = EnhanceStats(*sum((m.nutrition.array * m.res_num for m in used_materials), start=np.array([0,0,0,0]).astype(object)))
         return {
-            "强化舰船": self.target_ship.name, 
-            "所需强化值": {k: getattr(self.target_ship.nutri_requirements, v) for k, v in STAT_TRANS.items()}, 
-            "推荐强化素材": {
-                join_names([s.name for s in m.ships]): m.res_num for m in used_materials
+            ENHANCE_SHIP_NAME: self.target_ship.name, 
+            REQ_ENHANCE: {k: getattr(self.target_ship.nutri_requirements, v) for k, v in STAT_TRANS.items()}, 
+            REC_MATERIAL: {
+                m.name: m.res_num for m in used_materials
             }, 
-            "总计强化值": {k: getattr(sum_enhance, v) for k, v in STAT_TRANS.items()}, 
-            "等价消耗资源": {
-                "物资": sum(m.retire_coins * m.res_num for m in used_materials), 
-                "勋章": sum(m.medal * m.res_num for m in used_materials),
-                "特装原型": sum(m.sc * m.res_num for m in used_materials)
+            TOTAL_ENHANCE: {k: getattr(sum_enhance, v) for k, v in STAT_TRANS.items()}, 
+            EQ_RESOURCE: {
+                COIN: sum(m.retire_coins * m.res_num for m in used_materials), 
+                MEDAL: sum(m.medal * m.res_num for m in used_materials),
+                SPECIAL_CORE: sum(m.sc * m.res_num for m in used_materials)
             }
         }
 
