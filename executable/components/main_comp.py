@@ -30,8 +30,8 @@ class MainComp(Component):
         algo_input = self.input_comp.get_input()
         try: 
             res = json.dumps(minimize_cost(**algo_input), indent=4, ensure_ascii=False)
-        except: 
-            res = traceback.format_exc()
+        except Exception as e: 
+            res = repr(e)
         self.output_comp.enabled()
         self.output_comp.write(res)
         self.output_comp.disabled()

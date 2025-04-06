@@ -6,7 +6,8 @@ REM --------------------------
 REM 配置区（根据项目修改）
 REM --------------------------
 set SCRIPT=execute.py
-set NAME=强化省钱小助手
+set NAME=舰船强化省钱小助手
+set ASSETS=assets
 set ICON=assets\Akashi.ico
 set DATA_DIR=data
 set README=README.md
@@ -37,6 +38,7 @@ pyinstaller --noconfirm ^
     --name "%NAME%_v%VER%" ^
     --icon "%ICON%" ^
     --log-level=DEBUG ^
+    --add-data "%ASSETS%\*.ico;%ASSETS%" ^
     --add-data "%DATA_DIR%\*.xlsx;%DATA_DIR%" ^
     --add-data "%README%;." ^
     --add-binary "%ORTOOLS_LIB_SRC%\*.dll;%ORTOOLS_LIB_TAR%" ^

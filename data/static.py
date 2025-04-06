@@ -46,7 +46,7 @@ INPUT_TRANS = {
     "当前强化值": "nutri_cur_lv",
 }
 
-TITLE = "舰船强化资源消耗最小化"
+TITLE = "舰船强化省钱小助手"
 
 ENHANCE_SHIP_NAME = "强化舰船名称"
 CUSTOMIZED_TAB = "自定义输入"
@@ -68,3 +68,7 @@ EQ_RESOURCE = "等价消耗资源"
 COIN = "物资"
 MEDAL = "勋章"
 SPECIAL_CORE = "特装原型"
+
+DEFAULT_FONT = ("Microsoft YaHei", 12)
+SECTION_FONT = ("Microsoft YaHei", 13, "bold")
+TEXT_FONT = ("Microsoft YaHei", 10)

@@ -13,7 +13,12 @@ _T = TypeVar("_T")
 def get_info(): 
     with open(os.path.join(BASE_DIR, "README.md"), encoding="utf-8") as f: 
         text = f.read()
-    return text
+    info = ""
+    key_words = ["简介", "项目仓库", "输入注意事项：", "待完成事项：", "其他计划："]
+    for _ in text.split("## "): 
+        if any(map(_.startswith, key_words)): 
+            info += _
+    return info
 
 @cache
 def ensure_digit_vcmd(root: tk.Tk): 
@@ -30,7 +35,7 @@ def check_float_input(event: tk.Event):
             return False
         return True
     entry: ttk.Entry = event.widget
-    entry.config(foreground="black" if is_valid(entry.get()) else "red")
+    entry.config(foreground="#333333" if is_valid(entry.get()) else "red")
 
 def decorator(func: Callable[_P, _T]) -> Callable[[Any], Callable[_P, _T]]:
     def decorated(f): 
