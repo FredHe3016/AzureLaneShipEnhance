@@ -31,12 +31,13 @@ def adapt_material_input(m_input: str):
     ws = iter(m_input.split())
     _s = next(ws)
     for s in ws: 
-        if s.isdigit() ^ _s.isdigit(): 
+        if s.isdigit() and _s.isdigit(): 
             raise ValueError("强化素材输入格式错误")
         elif s.isdigit(): 
             material_ships[_s] = int(s)
         else: 
             material_ships[s] = -1
+        _s = s
     return material_ships
 
 @dataclass

@@ -6,7 +6,7 @@ from functools import cached_property
 
 from executable.components.base import Component
 from executable.utils import ensure_digit_vcmd
-from data.static import STAT_TRANS, INPUT_TRANS, CUSTOMIZED_TAB, PREDEFINED_TAB, ENHANCE_STAT
+from data.static import STAT_TRANS, INPUT_TRANS, CUSTOMIZED_TAB, PREDEFINED_TAB, ENHANCE_STAT, SECTION_FONT
 
 class _StatComp(Component): 
     var: tk.StringVar
@@ -107,13 +107,13 @@ class InputStatsComp(Component):
     def __init__(self, root: ttk.Frame, text: str = ENHANCE_STAT):
         self.frame = ttk.Frame(root)
 
-        self.label = ttk.Label(self.frame, text=text)
+        self.label = ttk.Label(self.frame, text=text, font=SECTION_FONT)
         self.notebook = ttk.Notebook(self.frame, width=40)
         self.customized = CustomizedTabComp(self.notebook)
         self.predefined = PredefinedTabComp(self.notebook)
 
     def _pack_sub_comps(self):
-        self.label.pack(anchor=tk.NW, padx=10)
+        self.label.pack(anchor=tk.NW, padx=10, pady=5)
         self.notebook.pack(anchor=tk.NW, fill=tk.X, padx=10)
         self.customized.pack()
         self.predefined.pack()

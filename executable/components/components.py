@@ -14,7 +14,19 @@ class OutputComp(Component):
 
     def __init__(self, root: ttk.Frame, default_text: str):
         self.frame = ttk.Frame(root)
-        self.text = ThemedScrolledText(self.frame, width=60)
+        self.text = ThemedScrolledText(
+            self.frame, 
+            font=TEXT_FONT, 
+            background="#fafafa", 
+            foreground="#333333",
+            insertbackground="#1e90ff", 
+            borderwidth=0, 
+            relief="solid", 
+            highlightthickness=1,
+            highlightbackground="#cccccc", 
+            highlightcolor="#1e90ff",
+            width=60
+        )
 
         self.text.insert(tk.END, default_text)
         self.default_text = default_text
@@ -41,7 +53,7 @@ class ShipNameComp(Component):
         self.frame = ttk.Frame(root)
 
         self.var = tk.StringVar(root.winfo_toplevel(), value=default_value)
-        self.label = ttk.Label(self.frame, text=text)
+        self.label = ttk.Label(self.frame, text=text, font=SECTION_FONT)
         self.entry = ttk.Entry(self.frame, textvariable=self.var)
         #TODO: self.notes
 
@@ -79,8 +91,21 @@ class MaterialComp(Component):
     def __init__(self, root: ttk.Frame, text: str = MATERIAL_SHIPS, default_value: str = ""):
         self.frame = ttk.Frame(root)
 
-        self.label = ttk.Label(self.frame, text=text)
-        self.material_ships = ThemedScrolledText(self.frame, width=40, height=8)
+        self.label = ttk.Label(self.frame, text=text, font=SECTION_FONT)
+        self.material_ships = ThemedScrolledText(
+            self.frame, 
+            font=TEXT_FONT, 
+            background="#fafafa", 
+            foreground="#333333",
+            insertbackground="#1e90ff", 
+            borderwidth=0, 
+            relief="solid", 
+            highlightthickness=1,
+            highlightbackground="#cccccc", 
+            highlightcolor="#1e90ff",
+            width=40, 
+            height=8
+        )
 
         self.material_ships.insert(tk.END, default_value)
         self.default_value = default_value
@@ -94,7 +119,7 @@ class MaterialComp(Component):
         self.material_ships.insert(tk.END, content)
 
     def _pack_sub_comps(self):
-        self.label.pack(anchor=tk.NW, padx=10)
+        self.label.pack(anchor=tk.NW, padx=10, pady=5)
         self.material_ships.pack(anchor=tk.NW, padx=10, fill=tk.X, expand=True)
         
     def clear(self):
@@ -110,24 +135,26 @@ class _WeightComp(Component):
         self.frame = ttk.Frame(root)
 
         self.var = tk.StringVar(root.winfo_toplevel(), value=default_value)
-        self.label = ttk.Label(self.frame, text=text, width=10)
-        self.entry = ttk.Entry(self.frame, textvariable=self.var)
+        self.label = ttk.Label(self.frame, text=text, width=8)
+        self.entry = ttk.Entry(self.frame, textvariable=self.var, width=7)
         #TODO: 考虑使用变量设置默认值
         self.default_value = default_value
 
         self.entry.bind("<KeyRelease>", check_float_input, add="+")
         self.entry.bind("<FocusOut>", self._validate_input, add="+")
 
-    def _validate_input(self): 
+    def _validate_input(self, event: tk.Event): 
         try: 
             f = float(self.var.get())
             if f > 1000: 
                 self.var.set("1000.0")
             elif f >= 0: 
+                self.var.set(str(float(f)))
                 return
         except: 
             pass
         self.clear()
+        check_float_input(event)
 
     def clear(self):
         self.var.set(str(self.default_value))
@@ -150,15 +177,16 @@ class WeightsComp(Component):
 
     def __init__(self, root: ttk.Frame, text: str = RETIRE_RES_WEIGHT):
         self.frame = ttk.Frame(root)
-        self.label = ttk.Label(self.frame, text=text)
+        self.label = ttk.Label(self.frame, text=text, font=SECTION_FONT)
         for k, v in RETIRE_RW_TRANS.items(): 
             setattr(self, v, _WeightComp(self.frame, text=k))
         self.medal.default_value = 1000.0
         self.medal.clear()
 
     def _pack_sub_comps(self):
-        for comp in self.sub_components.values(): 
-            comp.pack(anchor=tk.NW, side=tk.TOP, fill=tk.X)
+        self.label.pack(anchor=tk.NW, side=tk.TOP, fill=tk.X, pady=5)
+        self.medal.pack(anchor=tk.NW, side=tk.TOP, fill=tk.X)
+        self.sc.pack(anchor=tk.NW, side=tk.TOP, fill=tk.X)
 
 class InputsComp(Component): 
     _sub_comp_names = ("target_ship", "material_ships", "weights", "reset_button", "cal_button")
