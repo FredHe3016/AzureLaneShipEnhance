@@ -48,7 +48,7 @@ class Ship(_Ship):
     def nutri_requirements(self) -> EnhanceStats:
         """满强化所需最低强化值"""
         return EnhanceStats(
-            *(self.nutri_per_lv.array * (self.max_stats.array - self.cur_stats.array) - self.cur_stats.array)
+            *(self.nutri_per_lv.array * (self.max_stats.array - self.cur_stats.array) - self.nutri_cur_lv.array)
         )
     
     @classmethod
