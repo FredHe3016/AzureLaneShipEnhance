@@ -59,6 +59,9 @@ class ShipNameComp(Component):
 
         self.default_value = default_value
     
+    def clear(self):
+        self.var.set(self.default_value)
+
     def get_input(self):
         return self.var.get()
     
@@ -195,7 +198,7 @@ class InputsComp(Component):
         self.frame = ttk.Frame(root)
 
         self.target_ship = TargetShipComp(self.frame)
-        self.material_ships = MaterialComp(self.frame, text=MATERIAL_SHIPS, default_value=generate_material_ships())
+        self.material_ships = MaterialComp(self.frame, text=MATERIAL_SHIPS, default_value=generate_material_ships("all"))
         self.weights = WeightsComp(self.frame, text=RETIRE_RES_WEIGHT)
 
         self.reset_button = ttk.Button(self.frame, text=RESET_BUTTON)

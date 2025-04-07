@@ -27,11 +27,11 @@ class MainComp(Component):
     
     def cal_command(self): 
         self.input_comp.disabled()
-        algo_input = self.input_comp.get_input()
         try: 
+            algo_input = self.input_comp.get_input()
             res = json.dumps(minimize_cost(**algo_input), indent=4, ensure_ascii=False)
         except Exception as e: 
-            res = repr(e)
+            res = traceback.format_exc()
         self.output_comp.enabled()
         self.output_comp.write(res)
         self.output_comp.disabled()
