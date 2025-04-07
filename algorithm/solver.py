@@ -5,7 +5,7 @@ from typing import List, Dict, Any, Callable
 from ortools.linear_solver import pywraplp 
 
 from algorithm.ship import Ship, EnhanceMaterial, EnhanceStats
-from algorithm.utils import EnhanceSolverConfig, adapt_ship_data
+from algorithm.utils import adapt_ship_data
 from data.static import STAT_TRANS, ENHANCE_SHIP_NAME, REQ_ENHANCE, REC_MATERIAL, TOTAL_ENHANCE, EQ_RESOURCE, COIN, MEDAL, SPECIAL_CORE
 from data.data_loader import load_ships_data
 
@@ -17,7 +17,9 @@ class EnhanceSolverConfig:
     @classmethod
     def get_ships_data(cls, ships: Dict[str, int]): 
         sd = load_ships_data()
-        return [adapt_ship_data(n, d, ships[n]) for n, d in sd.items()]
+        if _ := set(ships.keys()).difference(set(sd.keys())): 
+            raise ValueError(f"缺少舰船强化值数据：{_}")
+        return [adapt_ship_data(n, sd[n], num) for n, num in ships.items()]
 
 class EnhanceCostMinimizer: 
     solver: pywraplp.Solver
@@ -51,11 +53,11 @@ class EnhanceCostMinimizer:
         sum_enhance = EnhanceStats(*sum((m.nutrition.array * m.res_num for m in used_materials), start=np.array([0,0,0,0]).astype(object)))
         return {
             ENHANCE_SHIP_NAME: self.target_ship.name, 
-            REQ_ENHANCE: {k: getattr(self.target_ship.nutri_requirements, v) for k, v in STAT_TRANS.items()}, 
+            REQ_ENHANCE: {v: getattr(self.target_ship.nutri_requirements, k) for k, v in STAT_TRANS.items()}, 
             REC_MATERIAL: {
                 m.name: m.res_num for m in used_materials
             }, 
-            TOTAL_ENHANCE: {k: getattr(sum_enhance, v) for k, v in STAT_TRANS.items()}, 
+            TOTAL_ENHANCE: {v: getattr(sum_enhance, k) for k, v in STAT_TRANS.items()}, 
             EQ_RESOURCE: {
                 COIN: sum(m.retire_coins * m.res_num for m in used_materials), 
                 MEDAL: sum(m.medal * m.res_num for m in used_materials),

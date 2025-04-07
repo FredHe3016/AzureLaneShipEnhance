@@ -50,7 +50,7 @@ class _StatComp(Component):
             self.var.set(1000)
 
 class _StatsColComp(Component): 
-    _sub_comp_names = ("label", *STAT_TRANS.values())
+    _sub_comp_names = ("label", *STAT_TRANS.keys())
     # label: ttk.Label
     # fp: _StatComp
     # trp: _StatComp
@@ -62,7 +62,7 @@ class _StatsColComp(Component):
 
         self.label = ttk.Label(self.frame, text=text)
         for k, v in STAT_TRANS.items(): 
-            setattr(self, v, _StatComp(self.frame, k))
+            setattr(self, k, _StatComp(self.frame, v))
     
     def _pack_sub_comps(self):
         for comp in self.sub_components.values(): 
@@ -73,13 +73,13 @@ class _StatsColComp(Component):
         return {k: v for k, v in self.sub_components.items() if isinstance(v, _StatComp)}
 
 class CustomizedTabComp(Component): 
-    _sub_comp_names = tuple(INPUT_TRANS.values())
+    _sub_comp_names = tuple(INPUT_TRANS.keys())
 
     def __init__(self, root: ttk.Frame):
         self.frame = ttk.Frame(root)
 
         for k, v in INPUT_TRANS.items(): 
-            setattr(self, v, _StatsColComp(self.frame, k))
+            setattr(self, k, _StatsColComp(self.frame, v))
 
     def _pack_sub_comps(self):
         for comp in self.sub_components.values(): 
