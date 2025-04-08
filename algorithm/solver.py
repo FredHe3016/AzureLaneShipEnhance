@@ -6,7 +6,7 @@ from ortools.linear_solver import pywraplp
 
 from algorithm.ship import Ship, EnhanceMaterial, EnhanceStats
 from algorithm.utils import adapt_ship_data
-from data.static import STAT_TRANS, ENHANCE_SHIP_NAME, REQ_ENHANCE, REC_MATERIAL, TOTAL_ENHANCE, EQ_RESOURCE, COIN, MEDAL, SPECIAL_CORE
+from data.static import STAT_TRANS, ENHANCE_SHIP_NAME, REQ_ENHANCE, REC_MATERIAL, TOTAL_ENHANCE, EQ_RESOURCE, COIN, MEDAL, SPECIAL_CORE, TOTAL_WE
 from data.data_loader import load_ships_data
 
 @dataclass
@@ -58,11 +58,12 @@ class EnhanceCostMinimizer:
                 m.name: m.res_num for m in used_materials
             }, 
             TOTAL_ENHANCE: {v: getattr(sum_enhance, k) for k, v in STAT_TRANS.items()}, 
-            EQ_RESOURCE: {
+            EQ_RESOURCE: (equal_rec := {
                 COIN: sum(m.retire_coins * m.res_num for m in used_materials), 
                 MEDAL: sum(m.medal * m.res_num for m in used_materials),
                 SPECIAL_CORE: sum(m.sc * m.res_num for m in used_materials)
-            }
+            }), 
+            TOTAL_WE: equal_rec[COIN] + equal_rec[MEDAL] * self.config.medal_weight + equal_rec[SPECIAL_CORE] * self.config.sc_weight,
         }
 
     def _create_variables(self):

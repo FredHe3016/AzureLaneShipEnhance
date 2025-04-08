@@ -40,6 +40,7 @@ pyinstaller --noconfirm ^
     --log-level=DEBUG ^
     --add-data "%ASSETS%\*.ico;%ASSETS%" ^
     --add-data "%DATA_DIR%\*.xlsx;%DATA_DIR%" ^
+    --add-data "%DATA_DIR%\*.json;%DATA_DIR%" ^
     --add-data "%README%;." ^
     --add-binary "%ORTOOLS_LIB_SRC%\*.dll;%ORTOOLS_LIB_TAR%" ^
     --paths "%ORTOOLS_LIB_ROOT%" ^

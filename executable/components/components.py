@@ -1,12 +1,13 @@
 import tkinter as tk
 from tkinter import ttk
+from functools import partial
 
 from executable.components.base import Component, ThemedScrolledText
 from executable.components.stat_components import InputStatsComp
 from executable.utils import check_float_input
 from algorithm.utils import adapt_material_input
 from data.static import *
-from data.data_loader import generate_material_ships
+from data.data_loader import generate_material_ships, requisition_expect, load_ships_data
 
 class OutputComp(Component): 
     default_text: str
@@ -47,7 +48,7 @@ class OutputComp(Component):
 class ShipNameComp(Component): 
     var: tk.StringVar
     default_value: str
-    _sub_comp_names = ("label", "entry")
+    _sub_comp_names = ("label", "entry", "hint")
 
     def __init__(self, root: ttk.Frame, text: str = SHIP_NAME, default_value: str = ""):
         self.frame = ttk.Frame(root)
@@ -55,9 +56,10 @@ class ShipNameComp(Component):
         self.var = tk.StringVar(root.winfo_toplevel(), value=default_value)
         self.label = ttk.Label(self.frame, text=text, font=SECTION_FONT)
         self.entry = ttk.Entry(self.frame, textvariable=self.var)
-        #TODO: self.notes
+        self.hint = ttk.Label(self.frame, font=HINT_FONT)
 
         self.default_value = default_value
+        self.hint.config(**SHIP_NAME_HINT["default"])
     
     def clear(self):
         self.var.set(self.default_value)
@@ -72,8 +74,9 @@ class ShipNameComp(Component):
             self.var = self.var.get() + content
 
     def _pack_sub_comps(self):
-        self.label.pack(anchor=tk.W, side=tk.LEFT, padx=10)
-        self.entry.pack(anchor=tk.W, side=tk.LEFT, padx=10)
+        self.label.pack(anchor=tk.NW, side=tk.TOP, fill=tk.X)
+        self.entry.pack(anchor=tk.NW, side=tk.LEFT, padx=5, pady=5)
+        self.hint.pack(anchor=tk.W, side=tk.LEFT, padx=5, pady=5, expand=True, fill=tk.X)
 
 class TargetShipComp(Component): 
     _sub_comp_names = ("name", "input_stats")
@@ -183,7 +186,7 @@ class WeightsComp(Component):
         self.label = ttk.Label(self.frame, text=text, font=SECTION_FONT)
         for k, v in RETIRE_RW_TRANS.items(): 
             setattr(self, v, _WeightComp(self.frame, text=k))
-        self.medal.default_value = 1000.0
+        self.medal.default_value = requisition_expect(ndigits=6)
         self.medal.clear()
 
     def _pack_sub_comps(self):
@@ -201,6 +204,8 @@ class InputsComp(Component):
         self.material_ships = MaterialComp(self.frame, text=MATERIAL_SHIPS, default_value=generate_material_ships("all"))
         self.weights = WeightsComp(self.frame, text=RETIRE_RES_WEIGHT)
 
+        self.target_ship.name.entry.bind("<KeyRelease>", partial(self.check_ship_name, focus_out=False), add="+")
+        self.target_ship.name.entry.bind("<FocusOut>", partial(self.check_ship_name, focus_out=True), add="+")
         self.reset_button = ttk.Button(self.frame, text=RESET_BUTTON)
         self.cal_button = ttk.Button(self.frame, text=CAL_BUTTON)
 
@@ -217,3 +222,25 @@ class InputsComp(Component):
         res["medal_weight"] = weights["medal"]
         res["sc_weight"] = weights["sc"]
         return res
+    
+    def clear(self): 
+        super().clear()
+        self.check_ship_name()
+
+    def check_ship_name(self, event: tk.Event = None, focus_out: bool = False):
+        name_comp = self.target_ship.name
+        name = name_comp.get_input()
+
+        if name == name_comp.default_value: 
+            name_comp.hint.config(**SHIP_NAME_HINT["default"])
+        elif ship_data := load_ships_data().get(name): 
+            stats = {
+                "max_stats": ship_data["durability"], 
+                "nutri_per_lv": ship_data["level_exp"]
+            }
+            input_stats_comp = self.target_ship.input_stats
+            input_stats_comp.clear()
+            input_stats_comp.write(stats)
+            name_comp.hint.config(**SHIP_NAME_HINT["match"])
+        elif focus_out: 
+            name_comp.hint.config(**SHIP_NAME_HINT["no_match"])

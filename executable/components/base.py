@@ -36,12 +36,12 @@ class Component:
 
     def write(self, content: Any, clear: bool = True): 
         if not isinstance(content, dict): 
-            raise NotImplementedError
+            raise NotImplementedError(f"Unexpected/Undefined input for {type(self)}")
         for k, v in content.items(): 
             sub_comp = self.sub_components[k]
             if isinstance(sub_comp, tk.Widget): 
-                raise NotImplementedError
-            sub_comp.insert(v, clear=clear)
+                raise NotImplementedError(f"Unexpected/Undefined input for attribute {k}")
+            sub_comp.write(v, clear=clear)
 
     def _pack_sub_comps(self): 
         #内部组件pack
