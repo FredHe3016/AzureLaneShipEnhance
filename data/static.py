@@ -1,5 +1,5 @@
 #一些不太需要随着游戏更新而更新的内容
-import datetime
+#TODO: 使用Enum类型代替dict
 
 RARITY_MEDAL_SC_MAP = {
     "n": {"medal": 0, "sc": 0}, 
@@ -7,6 +7,13 @@ RARITY_MEDAL_SC_MAP = {
     "sr": {"medal": 4, "sc": 0}, 
     "ssr": {"medal": 10, "sc": 0}, 
     "ur": {"medal": 30, "sc": 500}, 
+}
+
+REQUISITE_RATES = {
+    "n": 34, 
+    "r": 52, 
+    "sr": 10, 
+    "ssr": 4
 }
 
 SHIP_CLS_COIN_MAP = {
@@ -75,10 +82,28 @@ REQ_ENHANCE = "所需强化值"
 REC_MATERIAL = "推荐强化材料" 
 TOTAL_ENHANCE = "总计强化值"
 EQ_RESOURCE = "等价消耗资源"
+TOTAL_WE = "消耗资源加权之和"
 COIN = "物资"
 MEDAL = "勋章"
 SPECIAL_CORE = "特装原型"
 
+#TODO: 这些内容差不多该另起一个新文件了
 DEFAULT_FONT = ("Microsoft YaHei", 12)
 SECTION_FONT = ("Microsoft YaHei", 13, "bold")
 TEXT_FONT = ("Microsoft YaHei", 10)
+HINT_FONT = ("Microsoft YaHei", 8)
+
+SHIP_NAME_HINT ={
+    "default": {
+        "foreground": "#444444", 
+        "text": "※ 用于自动填充舰船数据以及同名匹配"
+    }, 
+    "match": {
+        "foreground": "#44ee44", 
+        "text": "√ 属性自动填充成功"
+    }, 
+    "no_match": {
+        "foreground": "#ee4444", 
+        "text": "! 未知舰船名称，请检查输入或更新data/ship_data.xlsx"
+    }
+}

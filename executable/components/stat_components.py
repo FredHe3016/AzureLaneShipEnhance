@@ -42,6 +42,10 @@ class _StatComp(Component):
     def clear(self):
         self.var.set(str(self.default_value))
 
+    def write(self, content: int|str, clear = True):
+        assert isinstance(content, int) or content.isdigit()
+        self.var.set(str(content))
+
     def _validate_input(self, event: tk.Event): 
         s = self.var.get()
         if s == "" or not s.isdigit(): 
@@ -122,3 +126,6 @@ class InputStatsComp(Component):
 
     def get_input(self):
         return self.customized.get_input()
+    
+    def write(self, content, clear = True):
+        return self.customized.write(content, clear)
